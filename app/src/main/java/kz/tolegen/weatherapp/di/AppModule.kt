@@ -1,5 +1,6 @@
 package kz.tolegen.weatherapp.di
 
+import android.app.Application
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import dagger.Module
 import dagger.Provides
@@ -7,6 +8,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kz.tolegen.weatherapp.App
 import kz.tolegen.weatherapp.common.Constants
+import kz.tolegen.weatherapp.data.local.CityDatabase
+import kz.tolegen.weatherapp.data.local.CityRepository
 import kz.tolegen.weatherapp.data.remote.Api
 import kz.tolegen.weatherapp.data.remote.repository.WeatherRepositoryImpl
 import kz.tolegen.weatherapp.domain.repository.WeatherRepository
@@ -56,8 +59,17 @@ object AppModule {
             .create(Api::class.java)
     }
 
+    @Singleton
+    @Provides
+    fun provideDatabase(application: Application): CityDatabase {
+        return CityDatabase.getDatabase(application)
+    }
 
-
+    @Singleton
+    @Provides
+    fun provideRepository(
+        database: CityDatabase
+    ): CityRepository = CityRepository(database.cityDao())
 
     @Provides
     @Singleton

@@ -23,20 +23,15 @@ import javax.inject.Inject
 @HiltViewModel
 class CityListViewModel @Inject constructor(
     private val getCurrentWeatherUseCase: GetCurrentWeatherUseCase,
-    application: Application
+    private val repository: CityRepository
 ) : ViewModel() {
 
     private val _state = mutableStateOf(CityListState())
     val state: State<CityListState> = _state
 
-    val readAllData: LiveData<List<CityEntity>>
-    private val repository: CityRepository
+    val readAllData: LiveData<List<CityEntity>> = repository.readAllData
 
     init {
-        val cityDao = CityDatabase.getDatabase(application).cityDao()
-        repository = CityRepository(cityDao)
-        readAllData = repository.readAllData
-
         findCityAndCurrentWeather("Алматы")
         findCityAndCurrentWeather("Нур-Султан")
     }
