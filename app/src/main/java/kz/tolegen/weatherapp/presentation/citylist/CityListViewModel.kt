@@ -31,11 +31,6 @@ class CityListViewModel @Inject constructor(
 
     val readAllData: LiveData<List<CityEntity>> = repository.readAllData
 
-    init {
-        findCityAndCurrentWeather("Алматы")
-        findCityAndCurrentWeather("Нур-Султан")
-    }
-
     private fun addCity(city: CityEntity) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.addCity(city)
