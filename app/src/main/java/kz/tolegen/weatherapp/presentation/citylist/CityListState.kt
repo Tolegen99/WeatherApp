@@ -4,6 +4,6 @@ import kz.tolegen.weatherapp.domain.model.CurrentWeather
 
 data class CityListState(
     val isLoading: Boolean = false,
-    val isContentReadyToShow: Boolean = false,
+    val isContentReadyToShow: Boolean = true,
     val error: String = ""
 )

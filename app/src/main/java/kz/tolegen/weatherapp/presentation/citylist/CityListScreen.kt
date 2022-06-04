@@ -5,7 +5,10 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -63,7 +66,12 @@ fun CityListScreen(
                                     Log.e("TAG", "CityListScreen: $cities")
                                     if (!textState.value.text.isNullOrBlank()) {
                                         val city =
-                                            cities.firstOrNull { it.name == textState.value.text }?.name
+                                            cities.firstOrNull {
+                                                it.name.equals(
+                                                    other = textState.value.text,
+                                                    ignoreCase = true
+                                                )
+                                            }
                                         if (city == null) {
                                             viewModel.findCityAndCurrentWeather(textState.value.text)
                                             viewModel.getWeatherOfCities(cities)
@@ -86,32 +94,33 @@ fun CityListScreen(
                                 Text("Поиск", fontSize = 10.sp)
                             }
                         }
-                        Text(
-                            text = "Данные были получены ${
-                                cities.first().updatedUp.isoToDate()?.dateToStringFormat1()
-                            }",
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center
-                        )
-                        Column(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Button(
-                                modifier = Modifier.padding(
-                                    top = 8.dp,
-                                    bottom = 16.dp
-                                    ),
-                                onClick = {
-                                    viewModel.getWeatherOfCities(cities)
-                                },
+                        if (cities.isNotEmpty()) {
+                            Text(
+                                text = "Данные были получены ${
+                                    cities.first().updatedUp.isoToDate()?.dateToStringFormat1()
+                                }",
+                                modifier = Modifier.fillMaxWidth(),
+                                textAlign = TextAlign.Center
+                            )
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                Text("Обновить", fontSize = 10.sp)
+                                Button(
+                                    modifier = Modifier.padding(
+                                        top = 8.dp,
+                                        bottom = 16.dp
+                                    ),
+                                    onClick = {
+                                        viewModel.getWeatherOfCities(cities)
+                                    },
+                                ) {
+                                    Text("Обновить", fontSize = 10.sp)
+                                }
                             }
                         }
                     }
                 }
-
                 items(items = cities) { city ->
                     CurrentWeatherItem(
                         cityEntity = city,
